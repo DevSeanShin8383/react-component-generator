@@ -196,6 +196,19 @@
   color: #77759a;
 }
 
+.prompt-counter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+
+.prompt-counter-over {
+  color: var(--danger);
+  font-weight: 700;
+}
+
 .provider-select select {
   height: 40px;
   padding: 0 10px;
