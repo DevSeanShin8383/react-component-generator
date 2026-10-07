@@ -1,4 +1,4 @@
-import { stripCodeFences, ensureRenderCall } from './generator';
+import { stripCodeFences, ensureRenderCall, getPromptError } from './generator';
 import { withModelFallback } from './fallback';
 
 // 우선순위 순서. 앞 모델이 실패하면 다음 모델로 폴백한다.
@@ -173,9 +173,10 @@ const server = Bun.serve({
           );
         }
 
-        if (!prompt) {
+        const promptError = getPromptError(prompt);
+        if (promptError) {
           return Response.json(
-            { error: 'Prompt is required' },
+            { error: promptError },
             { status: 400, headers: CORS_HEADERS }
           );
         }
