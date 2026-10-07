@@ -1,3 +1,5 @@
+import { validatePrompt } from '../src/utils/validatePrompt';
+
 // AI 응답 텍스트를 react-live에서 실행 가능한 코드로 정규화하는 순수 함수들.
 // 부수효과(Bun.serve 등)가 없어 단위 테스트가 가능하다.
 
@@ -21,4 +23,10 @@ export function ensureRenderCall(code: string): string {
     return `${code}\n\nrender(<${match[1]} />);`;
   }
   return code;
+}
+
+/** 요청 프롬프트를 검증하고 문제가 있으면 에러 메시지를, 없으면 null을 반환한다. */
+export function getPromptError(prompt: unknown): string | null {
+  if (typeof prompt !== 'string' || !prompt.trim()) return 'Prompt is required';
+  return validatePrompt(prompt).error ?? null;
 }
