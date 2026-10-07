@@ -3,6 +3,7 @@ import { PromptInput } from './components/PromptInput';
 import { ComponentCard } from './components/ComponentCard';
 import { useComponentGenerator } from './hooks/useComponentGenerator';
 import type { Provider } from './types';
+import { loadProvider, saveProvider } from './utils/storage';
 import './App.css';
 
 const PROVIDER_CONFIG = {
@@ -13,13 +14,17 @@ const PROVIDER_CONFIG = {
 function App() {
   const [apiKey, setApiKey] = useState('');
   const [showKey, setShowKey] = useState(false);
-  const [provider, setProvider] = useState<Provider>('google');
+  const [provider, setProvider] = useState<Provider>(() => loadProvider('google'));
   const [envKeys, setEnvKeys] = useState<Record<Provider, boolean>>({
     anthropic: false,
     google: false,
   });
-  const { components, isLoading, error, generate, removeComponent, clearAll } =
+  const { components, promptHistory, isLoading, error, generate, removeComponent, clearAll } =
     useComponentGenerator();
+
+  useEffect(() => {
+    saveProvider(provider);
+  }, [provider]);
 
   useEffect(() => {
     fetch('/api/config')
@@ -70,7 +75,11 @@ function App() {
             <span>새 컴포넌트</span>
           </div>
           <div className="window-body">
-            <PromptInput onGenerate={handleGenerate} isLoading={isLoading} />
+            <PromptInput
+              onGenerate={handleGenerate}
+              isLoading={isLoading}
+              history={promptHistory}
+            />
           </div>
         </section>
 
